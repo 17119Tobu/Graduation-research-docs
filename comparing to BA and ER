@@ -1,0 +1,24 @@
+import matplotlib.pyplot as plt
+import networkx as nx
+import numpy as np
+
+n=1000
+m=4
+p=0.01
+
+print('libによる生成')
+G = nx.barabasi_albert_graph(n,m)
+G1 = nx.erdos_renyi_graph(5000, p)
+pos = nx.circular_layout(G1)
+k1 = [i for i,x in enumerate(nx.degree_histogram(G)) if x != 0]
+degree_dist1 = [i/n for i in nx.degree_histogram(G) if i != 0]
+print(k1)
+print(degree_dist1)
+k2 = [i for i,x in enumerate(nx.degree_histogram(G1)) if x != 0]
+degree_dist2 = [i/n for i in nx.degree_histogram(G1) if i != 0]
+print(k2)
+print(degree_dist2)
+plt.xlabel('degree k')
+plt.ylabel('P(k)')
+plt.plot(k1, degree_dist1, color = 'red')
+plt.plot(k2, degree_dist2, color = 'blue')
