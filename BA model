@@ -1,0 +1,55 @@
+import matplotlib.pyplot as plt
+import networkx as nx
+import numpy as np
+import math
+ 
+ 
+def gen_BA_network(n, m, seed=None):
+    if seed is not None:
+        np.random.seed(seed=seed)
+        
+    m0 = m
+    G =nx.cycle_graph(m0)
+    initial_edges = list(G.edges())
+    node_list = list(range(m0))
+    
+    for i in range(m0, n):
+        darray = np.array(G.degree())[:,1]
+        for j in range(m):
+            s = no_sum(darray)
+            parray = darray / s
+            
+            new = np.random.choice(node_list, p = parray)
+            G.add_edge(i, new)
+            darray[new] = 0.
+            
+        node_list.append(i)
+        
+    G.remove_edges_from(initial_edges)
+    return G
+ 
+n = 1000
+m = 4
+ 
+
+G = nx.barabasi_albert_graph(n,m)
+print(nx.info(G))
+'''
+nx.draw(G)
+
+plt.show()
+'''
+k = [i for i,x in enumerate(nx.degree_histogram(G)) if x != 0]
+degree_dist = [i/n for i in nx.degree_histogram(G) if i != 0]
+print(k)
+print(degree_dist)
+plt.xscale('log')
+plt.yscale('log')
+plt.ylim(0.0001,1)
+plt.scatter(k, degree_dist)
+print('次数相関係数')
+print(nx.degree_assortativity_coefficient(G))
+print('平均クラスタ係数')
+print(nx.average_clustering(G))
+print('平均経路長')
+print(nx.average_shortest_path_length(G))
